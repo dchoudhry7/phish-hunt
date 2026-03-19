@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_name }}</title>
+    
+    <link rel="stylesheet" href="static/css/style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>🔍 {{ site_name }}</h1>
+                <p class="tagline">Check if a website is <span style="font-weight:600; color:var(--danger)">Phishing</span> or <span style="font-weight:600; color:var(--success)">Legitimate</span>.</p>
+            </div>
+
+            <div class="form">
+                <input id="urlInput" type="text" placeholder="Enter website URL">
+                <button id="checkBtn" onclick="checkUrl()">Check Now</button>
+            </div>
+
+            <div id="resultBox" class="result hidden"></div>
+
+        </div>
+    </div>
+
+    <script>
+    async function checkUrl() {
+        const url = document.getElementById("urlInput").value.trim();
+        const resultBox = document.getElementById("resultBox");
+        const checkBtn = document.getElementById("checkBtn");
+
+        // Show error if URL is empty
+        if (!url) {
+            resultBox.className = "result phishing"; // Use danger style for error
+            resultBox.innerHTML = `<span class="result-text">⚠️ Please enter a URL.</span>`;
+            resultBox.classList.remove('hidden');
+            return;
+        }
+        
+        // Disable button and show checking status
+        checkBtn.disabled = true;
+        resultBox.className = "result"; // Neutral style
+        resultBox.innerHTML = `<span class="result-text">Checking...</span>`;
+        resultBox.classList.remove('hidden');
+
+        try {
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url })
+            });
+
+            const data = await response.json();
+
+            if (data.result) {
+                // Set class to 'phishing' or 'legit' based on the result
+                let stateClass = data.result === "Phishing" ? "phishing" : "legit";
+                resultBox.className = `result ${stateClass}`;
+                // Populate result with separate spans for styling
+                resultBox.innerHTML = `
+                    <span class="result-text">${data.result}</span>
+                    <span class="confidence">Confidence: ${data.confidence}</span>
+                `;
+            } else {
+                // Handle errors or unexpected responses
+                resultBox.className = "result unknown";
+                resultBox.innerHTML = `<span class="result-text">⚠️ ${data.error || "Unexpected response"}</span>`;
+            }
+        } catch (err) {
+            // Handle network or fetch errors
+            resultBox.className = "result phishing"; // Use danger style for error
+            resultBox.innerHTML = `<span class="result-text">❌ Error: ${err.message}</span>`;
+        } finally {
+            // Re-enable the button after the check is complete
+            checkBtn.disabled = false;
+        }
+    }
+    </script>
+
+</body>
+</html>
