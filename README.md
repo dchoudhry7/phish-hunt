@@ -85,10 +85,10 @@ http://127.0.0.1:5000/
 ---
 
 ## 📸 Screenshots
-* ❌ Phishing
+### ❌ Phishing
 ![App Screenshot-1](assets/phish-1.png)
 
-* ✅ Legitimate
+### ✅ Legitimate
 ![App Screenshot-2](assets/phish-2.png)
 
 ---
