@@ -35,9 +35,9 @@ def interpret_prediction(pred):
         elif pred == 1:
             return "Legitimate"
         else:
-            return "Unknown"
+            return "Phishing"
     except Exception:
-        return "Unknown"
+        return "Phishing"
 
 
 @app.route("/")

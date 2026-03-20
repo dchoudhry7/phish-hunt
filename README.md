@@ -85,8 +85,11 @@ http://127.0.0.1:5000/
 ---
 
 ## 📸 Screenshots
+* ❌ Phishing
+![App Screenshot-1](assets/phish-1.png)
 
-(Add screenshots here – VERY important for resume)
+* ✅ Legitimate
+![App Screenshot-2](assets/phish-2.png)
 
 ---
 
